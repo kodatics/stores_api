@@ -48,24 +48,89 @@ def haversine(lat1, lon1, lat2, lon2):
     a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
     return R * 2 * math.asin(math.sqrt(a))
 
+# Data endpoint Anda
+api_info = {
+    "message": "☕ Coffee Shop Stores API",
+    "version": "1.0.0",
+    "endpoints": [
+        {"method": "GET", "path": "/api/stores", "description": "Semua lokasi (filter: ?type=retail&city=Jakarta Selatan&neighborhood=SCBD)"},
+        {"method": "GET", "path": "/api/stores/{id}", "description": "Detail satu lokasi berdasarkan ID"},
+        {"method": "GET", "path": "/api/stores/type/retail", "description": "Shortcut: semua outlet retail"},
+        {"method": "GET", "path": "/api/stores/nearby?lat=-6.22&lng=106.83&radius=3", "description": "Cari lokasi terdekat dalam radius (km)"},
+        {"method": "GET", "path": "/docs", "description": "Swagger UI — dokumentasi interaktif"}
+    ]
+}
+
 # ============================================================
 # ENDPOINTS
 # ============================================================
 
-@app.get("/")
-def root():
-    """Halaman utama — daftar endpoint yang tersedia."""
-    return {
-        "message": "☕ Coffee Shop Stores API",
-        "version": "1.0.0",
-        "endpoints": [
-            {"method": "GET", "path": "/api/stores",            "description": "Semua lokasi (filter: ?type=retail&city=Jakarta Selatan&neighborhood=SCBD)"},
-            {"method": "GET", "path": "/api/stores/{id}",       "description": "Detail satu lokasi berdasarkan ID (contoh: /api/stores/3)"},
-            {"method": "GET", "path": "/api/stores/type/retail", "description": "Shortcut: semua outlet retail"},
-            {"method": "GET", "path": "/api/stores/nearby?lat=-6.22&lng=106.83&radius=3", "description": "Cari lokasi terdekat dalam radius (km)"},
-            {"method": "GET", "path": "/docs",                  "description": "Swagger UI — dokumentasi interaktif"},
-        ]
-    }
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    # Membuat baris tabel secara dinamis dari api_info
+    rows = ""
+    for ep in api_info["endpoints"]:
+        rows += f"""
+        <tr class="border-b border-slate-700 hover:bg-slate-700/30 transition">
+            <td class="py-4 px-4"><span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded">{ep['method']}</span></td>
+            <td class="py-4 px-4 font-mono text-indigo-300 text-sm">{ep['path']}</td>
+            <td class="py-4 px-4 text-slate-400 text-sm">{ep['description']}</td>
+        </tr>
+        """
+
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Coffee Shop API</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-slate-900 text-slate-200 min-h-screen flex items-center justify-center p-6">
+        <div class="max-w-4xl w-full bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+            <div class="p-8 border-b border-slate-700 bg-gradient-to-r from-slate-800 to-slate-700">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white mb-2">{api_info['message']}</h1>
+                        <p class="text-slate-400 italic font-medium">Empowering data-driven decision for your caffeine needs.</p>
+                    </div>
+                    <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">v{api_info['version']}</span>
+                </div>
+            </div>
+            
+            <div class="p-8">
+                <h2 class="text-xl font-semibold text-indigo-400 mb-4">Available Endpoints</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="text-slate-500 uppercase text-xs tracking-widest border-b border-slate-700">
+                                <th class="pb-3 px-4">Method</th>
+                                <th class="pb-3 px-4">Endpoint</th>
+                                <th class="pb-3 px-4">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-8 flex gap-4">
+                    <a href="/docs" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-semibold transition shadow-lg shadow-indigo-500/20">
+                        🚀 Open Swagger UI
+                    </a>
+                    <a href="/redoc" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded-lg font-semibold transition">
+                        📖 Redoc
+                    </a>
+                </div>
+            </div>
+            
+            <div class="bg-slate-900/50 p-4 text-center text-xs text-slate-500 border-t border-slate-700">
+                &copy; 2026 Kodatics Analytics • Powered by FastAPI & Vercel
+            </div>
+        </div>
+    </body>
+    </html>
+    """
 
 
 @app.get("/api/stores")
