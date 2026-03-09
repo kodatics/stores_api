@@ -117,7 +117,7 @@ async def root(request: Request):
                 
                 <div class="mt-8 flex gap-4">
                     <a href="/docs" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-semibold transition shadow-lg shadow-indigo-500/20">
-                        🚀 Open Swagger UI
+                        🚀 Open Swagger UI to Try
                     </a>
                 </div>
             </div>
