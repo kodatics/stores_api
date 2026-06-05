@@ -268,7 +268,7 @@ async def root(request: Request):
             </div>
             
             <div class="bg-slate-900/50 p-4 text-center text-xs text-slate-500 border-t border-slate-700">
-                &copy; 2026 Kodatics Analytics • Powered by FastAPI & Vercel
+                &copy; 2026 Pyrantics • Powered by FastAPI & Vercel
             </div>
         </div>
     </body>
