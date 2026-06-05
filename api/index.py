@@ -8,7 +8,7 @@ import math
 # APP
 # ============================================================
 app = FastAPI(
-    title="Coffee Shop Stores API",
+    title="Archipelago Brew Co. Stores API",
     description="REST API untuk data lokasi outlet Coffee Shop — untuk latihan konsumsi API",
     version="1.0.0",
     docs_url="/docs",
